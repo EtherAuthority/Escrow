@@ -77,9 +77,8 @@ contract Escrow is owned{
     
     mapping (uint256 => escrowDetail) public escrowMap;
     
-    event startEscrow(address _buyer,address _seller, uint256 _amount);
-    
-    event releaseEscrow(address _buyer,address _seller, uint256 _amount);
+    event startEscrow(uint256 _escrowID, address indexed _buyer,address indexed _seller, uint256 _amount);
+    event releaseEscrow(uint256 _escrowID, address indexed _buyer,address indexed _seller, uint256 _amount);
     
     address public usdtadd;
     address public usdtHolder;
@@ -157,10 +156,9 @@ contract Escrow is owned{
         usdtHolder=_usdtOwner;
     }
     
-    function stratEscrowSigner(address _buyer,address _seller, uint256 _amount, uint256 escrowID) public{
+    function startEscrowSigner(address _buyer,address _seller, uint256 _amount, uint256 _escrowID) public onlySigner returns(bool) {
         
-        
-        require(!escrowMap[escrowID].status,"exist");
+        require(!escrowMap[_escrowID].status,"record already exists");
         
         escrowDetail memory startStruct;
         
@@ -172,32 +170,22 @@ contract Escrow is owned{
             
         });
         
-        escrowMap[escrowID]=startStruct;
+        escrowMap[_escrowID]=startStruct;
         
-         USDT(usdtadd).transferFrom(usdtHolder,address(this),_amount);
-         emit startEscrow(_buyer,_seller,_amount);
+        USDT(usdtadd).transferFrom(usdtHolder,address(this),_amount);
+        emit startEscrow(_escrowID, _buyer,_seller,_amount);
         
     }
     
     
-    function releaseEscrowSigner(address _buyer,address _seller, uint256 _amount, uint256 escrowID) public{
+    function releaseEscrowSigner(uint256 _escrowID) public onlySigner returns(bool){
         
-        require(escrowMap[escrowID].status,"exist");
+        require(escrowMap[_escrowID].status,"record does not exist");
+    
+        escrowMap[_escrowID].status=false;
         
-        escrowDetail memory startStruct;
-        
-        startStruct=escrowDetail({
-            buyer:_buyer,
-            seller:_seller,
-            amount:_amount,
-            status:false
-            
-        });
-        
-        escrowMap[escrowID]=startStruct;
-        
-         USDT(usdtadd).transfer(usdtHolder,_amount);
-         emit releaseEscrow(_buyer,_seller,_amount);
+        USDT(usdtadd).transfer(usdtHolder,escrowMap[_escrowID].amount);
+        emit releaseEscrow(_escrowID,escrowMap[_escrowID].buyer,escrowMap[_escrowID].seller,escrowMap[_escrowID].amount);
     }
     
     
