@@ -159,6 +159,9 @@ contract Escrow is owned{
     
     function stratEscrowSigner(address _buyer,address _seller, uint256 _amount, uint256 escrowID) public{
         
+        
+        require(!escrowMap[escrowID].status,"exist");
+        
         escrowDetail memory startStruct;
         
         startStruct=escrowDetail({
@@ -171,13 +174,16 @@ contract Escrow is owned{
         
         escrowMap[escrowID]=startStruct;
         
-        USDT(usdtadd).transferFrom(usdtHolder,address(this),_amount);
-        emit startEscrow(_buyer,_seller,_amount);
+         USDT(usdtadd).transferFrom(usdtHolder,address(this),_amount);
+         emit startEscrow(_buyer,_seller,_amount);
         
     }
     
     
     function releaseEscrowSigner(address _buyer,address _seller, uint256 _amount, uint256 escrowID) public{
+        
+        require(escrowMap[escrowID].status,"exist");
+        
         escrowDetail memory startStruct;
         
         startStruct=escrowDetail({
@@ -190,9 +196,11 @@ contract Escrow is owned{
         
         escrowMap[escrowID]=startStruct;
         
-        USDT(usdtadd).transfer(usdtHolder,_amount);
-        emit releaseEscrow(_buyer,_seller,_amount);
+         USDT(usdtadd).transfer(usdtHolder,_amount);
+         emit releaseEscrow(_buyer,_seller,_amount);
     }
+    
+    
     
     
     
