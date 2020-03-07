@@ -25,7 +25,6 @@ contract Escrow {
     function startEscrowSigner(address _buyer, address _seller, uint256 _amount) public returns(bool){
         
         require(Deal[_buyer]!=_seller,"Pending");
-        require(msg.sender==_buyer,"Cannot Start");
         
         _amount=_amount*(10**18);
         buyerBalance[_buyer] += _amount;
