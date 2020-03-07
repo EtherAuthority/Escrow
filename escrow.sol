@@ -1,4 +1,39 @@
-pragma solidity ^0.5.16;
+pragma solidity 0.5.16; /*
+
+___________________________________________________________________
+  _      _                                        ______           
+  |  |  /          /                                /              
+--|-/|-/-----__---/----__----__---_--_----__-------/-------__------
+  |/ |/    /___) /   /   ' /   ) / /  ) /___)     /      /   )     
+__/__|____(___ _/___(___ _(___/_/_/__/_(___ _____/______(___/__o_o_
+
+
+
+████████╗██╗██████╗  ██████╗     ██████╗  █████╗ ██╗   ██╗
+╚══██╔══╝██║██╔══██╗██╔═══██╗    ██╔══██╗██╔══██╗╚██╗ ██╔╝
+   ██║   ██║██████╔╝██║   ██║    ██████╔╝███████║ ╚████╔╝ 
+   ██║   ██║██╔══██╗██║   ██║    ██╔═══╝ ██╔══██║  ╚██╔╝  
+   ██║   ██║██║  ██║╚██████╔╝    ██║     ██║  ██║   ██║   
+   ╚═╝   ╚═╝╚═╝  ╚═╝ ╚═════╝     ╚═╝     ╚═╝  ╚═╝   ╚═╝   
+                                                          
+
+=== 'TiroPay' Escrow contract with following features ===
+    => Ownership management 
+    => Signer, a sub-owner wallet will process manual escrow 
+    => USDT will be used as escrow fund
+    => While starting escrow, USDT will be transferred from owner wallet to smart contract
+    => And while releasing escrow, USDT will be transferred to owner wallet again and user will get fiat currency from the web application
+
+
+============= Independant Audit of the code ============
+    => Multiple Freelancers Auditors
+
+
+-------------------------------------------------------------------
+ Copyright (c) 2020 onwards  TiroPay Inc. ( https://tiropay.com )
+ Contract designed with ❤ by EtherAuthority ( https://EtherAuthority.io )
+-------------------------------------------------------------------
+*/ 
 
 
 interface USDT{
@@ -51,7 +86,7 @@ contract owned {
 }
 
 
-contract Escrow is owned{
+contract TiropayEscrow is owned{
     
     mapping (address => uint256) public buyerBalance;
     //uint balance;
